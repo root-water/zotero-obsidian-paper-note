@@ -1,0 +1,122 @@
+{
+  "skill_name": "zotero-obsidian-paper-note",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "阅读 Zotero 的光分类里的 A low-power biomimetic collision detector based on an in-memory molybdenum disulfide photodetector，并写入 <ObsidianVault>\\论文\\光学，重要图截进来，重点内容高亮。",
+      "expected_output": "Creates or updates the paper note in the user's Obsidian vault with Zotero metadata, PDF-grounded Chinese notes, key figure embeds, highlighted conclusions and parameters, and cleaned temporary files.",
+      "files": [],
+      "assertions": [
+        "Writes the note under <ObsidianVault>\\论文\\光学 rather than the Codex workspace.",
+        "Includes YAML frontmatter with title, year, journal, doi, zotero_item_key, and zotero_pdf_key.",
+        "Uses Zotero/PDF-derived content rather than only public web summary material.",
+        "Embeds selected figure crops with vault-relative Obsidian wikilinks.",
+        "Includes ==highlighted== key conclusions, numbers, or limitations.",
+        "Places selected key figures near the top and adds a 读图要点 under each embedded figure.",
+        "Includes narrative deep-reading sections plus 阅读心得, 适合引用的观点, 可延伸方向, and 关联主题.",
+        "Does not add Mermaid or review-card filler unless it genuinely clarifies the paper or the user asks for it."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "帮我把 Zotero 里 DOI 为 10.1038/s41928-020-00466-9 的论文整理成 Obsidian 论文笔记。我的库在 <ObsidianVault>，放到 论文\\光学，写详细阅读心得。",
+      "expected_output": "Finds the Zotero item by DOI, verifies PDF attachment, writes a detailed Chinese literature note with correct Obsidian frontmatter, Zotero links, and reading insights.",
+      "files": [],
+      "assertions": [
+        "Finds the Zotero item by DOI and reports/uses the matching Zotero item key.",
+        "Includes clickable zotero://select and zotero://open-pdf links when keys are available.",
+        "Creates a detailed Chinese reading note with sections for background, method, results, limitations, and personal insight.",
+        "Includes the user's preferred long-form sections such as 关键图, 阅读心得, 适合引用的观点, 可延伸方向, and 关联主题.",
+        "Does not create a duplicate note when an existing title-matching note is present."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "这篇 Zotero 论文已经有一份摘要版 Obsidian 笔记了，请基于 PDF 全文补充实验细节、局限、关键图和 ==高亮==，不要写错 vault。",
+      "expected_output": "Updates the existing note rather than creating a duplicate, preserves useful existing content, adds PDF-derived details, embeds selected cropped figures, highlights key points, and verifies the target vault path.",
+      "files": [],
+      "assertions": [
+        "Updates the existing note instead of creating a duplicate title file.",
+        "Preserves useful existing note content while adding PDF-grounded detail.",
+        "Adds or improves key figure embeds and figure-specific 读图要点.",
+        "Adds experimental details, limitations, and ==highlighted== key points.",
+        "Verifies the output path is inside the intended Obsidian vault."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "把 Zotero 里 DOI 为 10.1038/s41928-020-00466-9 的论文整理到 Obsidian，做成详细论文笔记。",
+      "expected_output": "When no target folder is specified, finds the Zotero item, reads its collection/category, creates or uses the matching folder under the Obsidian paper notes root, and writes the detailed note there.",
+      "files": [],
+      "assertions": [
+        "Does not ask for a target folder when Zotero collection information is available.",
+        "Uses the matched Zotero collection/category name as the Obsidian paper-note folder.",
+        "Creates the folder under <ObsidianVault>\\论文 if it does not already exist.",
+        "Keeps assets under the centralized asset folder, such as 论文\\_assets\\<Zotero collection>\\<paper-slug>.",
+        "Includes the Zotero collection/category in frontmatter or 文献信息."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "阅读 Zotero 的光分类里的 A low-power biomimetic collision detector based on an in-memory molybdenum disulfide photodetector，整理到 Obsidian 论文笔记，重要图截进来。",
+      "expected_output": "Because no explicit target folder is given, mirrors the Zotero collection exactly and writes under 论文\\光, not 论文\\光学.",
+      "files": [],
+      "assertions": [
+        "Uses <ObsidianVault>\\论文\\光 as the target folder when the matched Zotero collection is 光.",
+        "Does not normalize 光 to 光学 unless the user explicitly says 光学.",
+        "Keeps assets under 论文\\_assets\\光\\<paper-slug> so 论文\\光 contains paper notes only.",
+        "Includes category: 光 and the Zotero collection in frontmatter or 文献信息."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "这篇 DOI 为 10.1038/s41928-020-00466-9 的论文在 vault 里已经有一篇带 zotero_item_key 的旧笔记了，请基于 Zotero PDF 和标注补充，不要重复建文件。",
+      "expected_output": "Finds the existing note by zotero_item_key or DOI, preserves useful content, and updates it with PDF-grounded details, Zotero annotations, figures, and missing metadata.",
+      "files": [],
+      "assertions": [
+        "Searches existing notes by zotero_item_key first, then DOI, then title or aliases.",
+        "Updates the matched existing note rather than creating a duplicate markdown file.",
+        "Preserves existing personal notes, useful sections, frontmatter, links, and embeds.",
+        "Adds missing Zotero metadata, annotations or child notes, PDF-derived details, selected figures, and ==highlighted== key points.",
+        "Reports ambiguity instead of editing when two plausible existing notes match."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "把 Zotero 里一篇算法 benchmark 论文整理成 Obsidian 笔记，不要套器件论文模板，保留关键图和实验表。",
+      "expected_output": "Uses a non-device paper structure with algorithm, dataset, metric, baseline, ablation, and limitation sections instead of forcing device/material headings.",
+      "files": [],
+      "assertions": [
+        "Uses domain-appropriate headings such as 问题定义, 模型结构, 数据集与指标, 消融实验, 失败案例, or 基线方法.",
+        "Does not force irrelevant headings such as 器件结构 or 工作原理 when the paper is not about devices/material systems.",
+        "Keeps universal sections such as 文献信息, 关键图, 创新点, 局限与问题, 阅读心得, 适合引用的观点, 可延伸方向, and 关联主题.",
+        "Uses 关键参数 for numeric metrics or 关键证据 for qualitative/comparative claims."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "这篇 PDF 图很多，请先做页面预览/接触图定位，再只裁关键图进 Obsidian，临时预览最后清掉。",
+      "expected_output": "Uses render_pdf_crops.py preview/contact-sheet mode before final figure crops, embeds only useful final crops, and removes temporary preview/contact-sheet files.",
+      "files": [],
+      "assertions": [
+        "Renders preview pages or a contact sheet before deciding crop boxes.",
+        "Measures crop boxes against preview images and records source_scale in crops.json.",
+        "Embeds only selected final crop images with vault-relative wikilinks.",
+        "Removes preview pages, contact sheets, and temporary crop configs after the final note is written unless the user asks to keep them."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "以后论文笔记都做成 A low-power biomimetic collision detector 这篇的样子：关键图放前面，有读图要点，正文要像深度阅读笔记，不要默认塞思维导图和复习卡片。",
+      "expected_output": "Uses the exemplar long-form Chinese reading-note style as the default structure for future Zotero-to-Obsidian paper notes.",
+      "files": [],
+      "assertions": [
+        "Starts with frontmatter, title, one-sentence summary callout, 文献信息, and 关键图.",
+        "Adds a 读图要点 under every embedded key figure.",
+        "Uses narrative deep-reading sections tailored to the paper domain rather than a generic table-heavy template.",
+        "Includes 阅读心得, 适合引用的观点, 可延伸方向, and 关联主题 near the end.",
+        "Does not default to Mermaid, 论文速览, 复习卡片, or 待追问 unless they add clear value or are requested."
+      ]
+    }
+  ]
+}
