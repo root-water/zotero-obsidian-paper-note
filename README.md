@@ -150,40 +150,6 @@ python -m pip install pypdfium2
 - `可延伸方向`：后续实验、复现、对比或综述方向。
 - `关联主题`：Obsidian wikilinks。
 
-## 图像裁剪原则
-
-论文图像裁剪优先使用 caption-boundary 规则：
-
-1. 先渲染页面 preview 或 contact sheet。
-2. 用 PDF text layer 或视觉检查定位 `Fig. N | ...` / `Figure N.` 图注起点。
-3. 将图注起点作为下边界，裁剪其上方完整图像区域。
-4. 保留少量白边，避免截掉 x/y 轴单位、tick label、legend、colorbar、panel label 或多行 panel。
-5. 最终检查写入 vault 的图片，而不仅检查临时 preview。
-
-这条规则来自实际使用中的错误修正：手动紧贴 panel 裁剪很容易漏掉横坐标单位，或者把图注/正文混进图片。
-
-## 隐私与发布边界
-
-这个仓库只应包含 reusable skill code、模板、说明和测试数据。不要提交：
-
-- Zotero `zotero.sqlite` 或 SQLite WAL/SHM 文件。
-- 论文 PDF。
-- Obsidian vault 私人笔记。
-- 生成的图像裁剪结果。
-- 本地路径配置 `skill-config.local.json`。
-- 临时 preview/contact sheet。
-
-`.gitignore` 已经覆盖这些常见文件，但发布前仍建议运行一次路径和敏感文件扫描。
-
-## 验证状态
-
-当前版本在 Windows + PowerShell 环境下通过：
-
-- `python -m unittest discover -s scripts -p "test_*.py"`
-- Codex skill `quick_validate.py`
-- 本机绝对路径扫描
-- Zotero 条目查询 smoke test
-- PDF 渲染/裁剪 smoke test
 
 ## License
 
