@@ -4,7 +4,21 @@ Read this when Zotero CLI is unavailable, metadata/PDF lookup is needed, or figu
 
 ## Portable Path Configuration
 
-On a new computer, create `skill-config.local.json` next to `SKILL.md` or set environment variables.
+On a new computer, first try automatic discovery:
+
+```powershell
+python scripts\resolve_config.py --show
+```
+
+The resolver searches common user folders, Documents/OneDrive/Dropbox/iCloud locations, and relevant workspace ancestors. It identifies Zotero by `zotero.sqlite` plus `storage`, and Obsidian vaults by `.obsidian`, preferring vaults that already contain `论文`.
+
+If discovery is ambiguous, inspect candidates:
+
+```powershell
+python scripts\resolve_config.py --discover
+```
+
+Use environment variables or `skill-config.local.json` only to override or disambiguate paths.
 
 Environment variables:
 
@@ -14,8 +28,11 @@ Environment variables:
 | Paper notes root | `ZOTERO_OBSIDIAN_PAPER_ROOT` |
 | Zotero data directory | `ZOTERO_DATA_DIR` |
 | Zotero database | `ZOTERO_DB` |
+| Limit discovery roots | `ZOTERO_OBSIDIAN_SEARCH_ROOTS` |
 
-Inspect resolved paths:
+`ZOTERO_OBSIDIAN_SEARCH_ROOTS` uses the platform path separator (`;` on Windows, `:` on macOS/Linux).
+
+Inspect resolved paths at any time:
 
 ```powershell
 python scripts\resolve_config.py --show

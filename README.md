@@ -11,7 +11,7 @@
 - 根据 `zotero_item_key`、DOI、标题或文件名识别已有 Obsidian 笔记，优先更新而不是重复创建。
 - 生成中文深度阅读笔记，包括 verified metadata、Zotero item/PDF links、核心问题、方法、关键结果、局限、关键图读图点、阅读心得、适合引用的观点、可延伸方向和关联主题。
 - 裁剪关键图，使用“图注起点作为下边界”的 caption-boundary 规则，避免截掉坐标轴单位、legend、colorbar、panel label 或把正文/图注裁进去。
-- 支持跨电脑迁移：本机路径通过环境变量或 `skill-config.local.json` 配置，不需要把个人路径写死进 skill。
+- 支持跨电脑迁移：默认自动搜索 Zotero/Obsidian 关键文件夹；环境变量或 `skill-config.local.json` 只用于覆盖或消除歧义。
 
 ## 目录结构
 
@@ -50,9 +50,33 @@ Copy-Item -Recurse . "$env:CODEX_HOME\skills\zotero-obsidian-paper-note"
 
 如果 Codex 没有立即识别新 skill，重启 Codex 或刷新 skills 列表。
 
-## 配置路径
+## 自动发现与路径配置
 
-这个 skill 不应该提交个人路径。新电脑上推荐使用环境变量：
+新电脑上通常不需要先手动配置。先运行：
+
+```powershell
+python scripts\resolve_config.py --show
+```
+
+它会自动搜索常见位置：
+
+- 用户目录、`Documents`、`Desktop`
+- OneDrive、Dropbox、iCloudDrive
+- 当前 workspace 附近的 `Documents` / `Obsidian` / `Zotero` 祖先目录
+
+识别规则：
+
+- Zotero：目录中存在 `zotero.sqlite`，并优先选择同时存在 `storage` 的目录。
+- Obsidian：目录中存在 `.obsidian`，并优先选择已有 `论文` 子目录的 vault。
+- 如果多个候选分数相同，会在 `--show` / `--discover` 输出里标记 ambiguous，这时再手动指定。
+
+查看所有候选：
+
+```powershell
+python scripts\resolve_config.py --discover
+```
+
+如果自动发现不符合预期，再使用环境变量覆盖：
 
 ```powershell
 $env:ZOTERO_OBSIDIAN_VAULT = "D:\path\to\ObsidianVault"
@@ -74,13 +98,19 @@ $env:ZOTERO_DB = "D:\path\to\Zotero\zotero.sqlite"
 
 `skill-config.local.json` 已被 `.gitignore` 忽略，不应提交到 GitHub。
 
+需要限制搜索范围时可以设置：
+
+```powershell
+$env:ZOTERO_OBSIDIAN_SEARCH_ROOTS = "D:\Users\you\Documents;E:\Notes"
+```
+
 路径解析优先级：
 
 1. 用户在对话中明确给出的路径。
 2. 环境变量：`ZOTERO_OBSIDIAN_VAULT`、`ZOTERO_OBSIDIAN_PAPER_ROOT`、`ZOTERO_DATA_DIR`、`ZOTERO_DB`。
 3. 本地私有配置：`skill-config.local.json`。
 4. 模板配置：`skill-config.json`。
-5. 常见系统默认路径，且必须实际存在并包含数据。
+5. 自动发现到的 Zotero/Obsidian 候选路径。
 
 ## 新电脑迁移检查
 
@@ -90,7 +120,11 @@ $env:ZOTERO_DB = "D:\path\to\Zotero\zotero.sqlite"
 python scripts\resolve_config.py --show
 ```
 
-确认 Zotero 数据库、Zotero storage、Obsidian vault 和 `论文` 目录都解析正确。
+确认 Zotero 数据库、Zotero storage、Obsidian vault 和 `论文` 目录都解析正确。若候选太多：
+
+```powershell
+python scripts\resolve_config.py --discover
+```
 
 再用一篇已知存在的 Zotero 论文做 smoke test：
 
@@ -150,6 +184,15 @@ python -m pip install pypdfium2
 - `可延伸方向`：后续实验、复现、对比或综述方向。
 - `关联主题`：Obsidian wikilinks。
 
+## 验证状态
+
+当前版本在 Windows + PowerShell 环境下通过：
+
+- `python -m unittest discover -s scripts -p "test_*.py"`
+- Codex skill `quick_validate.py`
+- 本机绝对路径扫描
+- Zotero 条目查询 smoke test
+- PDF 渲染/裁剪 smoke test
 
 ## License
 

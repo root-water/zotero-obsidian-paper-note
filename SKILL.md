@@ -17,15 +17,15 @@ Do not use this for generic web summaries when Zotero/PDF access is irrelevant. 
 
 ## Portable Configuration
 
-Resolve machine-specific paths before touching Zotero or Obsidian. Prefer, in order:
+Resolve machine-specific paths before touching Zotero or Obsidian. Default to auto-discovery, but respect explicit configuration. Prefer, in order:
 
 1. Explicit paths from the user.
 2. Environment variables: `ZOTERO_OBSIDIAN_VAULT`, `ZOTERO_OBSIDIAN_PAPER_ROOT`, `ZOTERO_DATA_DIR`, `ZOTERO_DB`.
 3. `skill-config.local.json` next to this `SKILL.md` (user/private, do not package with personal paths).
 4. `skill-config.json` template next to this `SKILL.md`.
-5. Common OS defaults only after checking they exist and contain data.
+5. Auto-discovered Zotero/Obsidian locations under common user folders and workspace ancestors.
 
-Run `python scripts/resolve_config.py --show` to inspect resolved paths. Run `python scripts/smoke_test.py --title "<known Zotero title>"` after installing on a new computer.
+Run `python scripts/resolve_config.py --show` to inspect resolved paths and candidates. Run `python scripts/resolve_config.py --discover` when path discovery is ambiguous. Run `python scripts/smoke_test.py --title "<known Zotero title>"` after installing on a new computer.
 
 Treat the current Codex workspace as staging, not the vault, unless the user explicitly says it is the vault. Never assume a path named `Zotero` or `Obsidian` is valid without checking `zotero.sqlite`, PDF storage, and note root existence.
 
